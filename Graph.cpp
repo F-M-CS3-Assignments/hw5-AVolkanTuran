@@ -89,14 +89,18 @@ const GraphEdge *Graph::AddEdge(nodekey_t gnFrom, nodekey_t gnTo, unsigned int w
 	{
 		throw invalid_argument("No such node: " + to_string(gnTo));
 	}
+	delete dup;
 
-	GraphEdge *ge = new GraphEdge;
+	GraphEdge *ge = new GraphEdge{gnFrom, gnTo, w};
 
 	// TODO:
 	// Do stuff here?  IDK what though
-
-	const GraphEdge *response = ge; // this helps the compiler go
-	return response;
+	size_t i = 0;
+	while(nodes.at(i) != gnFrom){
+		i++;
+	}
+	adjList.at(i).push_back(ge);
+	return ge;
 }
 
 
@@ -104,6 +108,12 @@ bool Graph::IsPresent(nodekey_t key) const
 {
 	// TODO:
 	// iterate through this->nodes and look for one that matches key
+	for(size_t i = 0; i < this->nodes.size(); i++){
+		if(nodes.at(i)==key){
+			return true;
+		}
+	}
+	return false;
 }
 
 
@@ -126,7 +136,9 @@ set<const GraphEdge*> Graph::GetOutwardEdgesFrom(nodekey_t node) const
 	// TODO:
 	// iterate over this->adjList.at(idx); and find nodes that match the given node
 	// in their "from" field, put those nodes in result
-
+	for(size_t i = 0; i<this->adjList.at(idx).size(); i++){
+		result.insert(this->adjList.at(idx).at(i));
+	}
 
 	return result;
 }
@@ -135,6 +147,11 @@ set<const GraphEdge*> Graph::GetOutwardEdgesFrom(nodekey_t node) const
 {
 	// TODOL
 	// iterate of this->nodes, accumulate into a set<nodekey_t> and return it
+	set<nodekey_t> nodeSet;
+	for(size_t i = 0; i< this->nodes.size(); i++){
+		nodeSet.insert(nodes.at(i));
+	}
+	return nodeSet;
 }
 
 
@@ -210,5 +227,10 @@ Graph::~Graph() {
 	// TODO:
 	// Right now the memory leaks are bad, I need to
 	// implement something here to fix it
+	for(size_t i = 0; i<adjList.size(); i++){
+		for(size_t j = 0; j<adjList.at(i).size(); j++){
+			delete adjList.at(i).at(j);
+		}
+	}
 }
 
