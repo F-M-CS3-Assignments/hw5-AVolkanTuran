@@ -3,6 +3,8 @@
 
 using namespace std;
 
+
+//The time complexity of this algorithm is O()
 int dijkstra(nodekey_t start, nodekey_t end, const Graph *g){
     if(!(g->IsPresent(start) && g->IsPresent(end))){
         throw invalid_argument("The start and end nodes must exist in the graph.");
@@ -28,7 +30,6 @@ int dijkstra(nodekey_t start, nodekey_t end, const Graph *g){
         BPQNode curr = pq.top();
         pq.pop();
 
-        curr.visited = true;
         result.push_back(curr);
 
         set<const GraphEdge*> edges = g->GetOutwardEdgesFrom(curr.gnode);
